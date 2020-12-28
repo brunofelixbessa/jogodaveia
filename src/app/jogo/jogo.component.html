@@ -1,0 +1,47 @@
+<div class="container">
+
+  <div class="col col-2">
+    <div *ngIf="jogoAtual.jogoID">
+      <mat-grid-list cols="3">
+        <mat-grid-tile><button mat-raised-button (click)="jogar('c1')" class="bttabuleiro">{{jogoAtual.c1}}</button>
+        </mat-grid-tile>
+        <mat-grid-tile><button mat-raised-button (click)="jogar('c2')" class="bttabuleiro">{{jogoAtual.c2}}</button>
+        </mat-grid-tile>
+        <mat-grid-tile><button mat-raised-button (click)="jogar('c3')" class="bttabuleiro">{{jogoAtual.c3}}</button>
+        </mat-grid-tile>
+        <mat-grid-tile><button mat-raised-button (click)="jogar('c4')" class="bttabuleiro">{{jogoAtual.c4}}</button>
+        </mat-grid-tile>
+        <mat-grid-tile><button mat-raised-button (click)="jogar('c5')" class="bttabuleiro">{{jogoAtual.c5}}</button>
+        </mat-grid-tile>
+        <mat-grid-tile><button mat-raised-button (click)="jogar('c6')" class="bttabuleiro">{{jogoAtual.c6}}</button>
+        </mat-grid-tile>
+        <mat-grid-tile><button mat-raised-button (click)="jogar('c7')" class="bttabuleiro">{{jogoAtual.c7}}</button>
+        </mat-grid-tile>
+        <mat-grid-tile><button mat-raised-button (click)="jogar('c8')" class="bttabuleiro">{{jogoAtual.c8}}</button>
+        </mat-grid-tile>
+        <mat-grid-tile><button mat-raised-button (click)="jogar('c9')" class="bttabuleiro">{{jogoAtual.c9}}</button>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+  </div>
+
+  <div class="col col-2">
+    <div *ngIf="!jogoAtual.jogoID" class="row">
+      <button mat-raised-button (click)="criarJogo()">Criar NOVO JOGO</button>
+    </div>
+
+    <div *ngIf="jogoAtual.player1 && jogoAtual.player2" class="row">
+
+      <div *ngIf="jogoAtual.suavez">
+        <button>Sua vez {{jogoAtual.player1}}</button>
+      </div>
+
+      <div *ngIf="!jogoAtual.suavez">
+        <button>Sua vez {{jogoAtual.player2}}</button>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

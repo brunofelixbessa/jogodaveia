@@ -1,0 +1,68 @@
+<div class="container">
+
+  <div class="row">
+    <div class="col col-3">
+
+    </div>
+    <div class="col col-3">
+
+      <mat-card *ngIf="user$ | async as user; else iniciar">
+        <a mat-raised-button class="botao-jogar" color="accent" routerLink="/jogo">Jogar</a>
+      </mat-card>
+
+      <ng-template #iniciar>
+        <mat-card>
+          <div class="row">
+            <div class="col centro">
+              <div>Bem Vindo</div>
+            </div>
+          </div>
+          <div class="row">
+
+            <mat-form-field class="full" appearance="outline">
+              <mat-label>Email</mat-label>
+              <input type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
+                placeholder="Ex. email@example.com">
+              <mat-hint>Entre com um email</mat-hint>
+              <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+                Por favor entre com um email valido.
+              </mat-error>
+              <mat-error *ngIf="emailFormControl.hasError('required')">
+                Email é <strong>obrigátorio</strong>
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+          <div class="row">
+            <mat-form-field class="full" appearance="outline">
+              <mat-label>Senha</mat-label>
+              <input matInput [formControl]="senhaFormControl" [type]="hide ? 'password' : 'text'">
+              <mat-hint>Escolha uma senha</mat-hint>
+              <mat-error *ngIf="emailFormControl.hasError('required')">
+                Senha é <strong>obrigátorio</strong>
+              </mat-error>
+              <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hide">
+                <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+          <div class="row">
+            <button class="full" mat-raised-button color="primary">Entrar com email</button>
+          </div>
+          <br />
+          <div class="row">
+            <button class="full" (click)="loginGoogle()" mat-raised-button color="warn">Entrar com
+              google</button>
+          </div>
+        </mat-card>
+      </ng-template>
+
+    </div>
+    <div class="col col-3">
+
+    </div>
+  </div>
+
+
+</div>
