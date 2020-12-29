@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import firebase from 'firebase';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class FirebaseService {
   private jogosFB$: Observable<Jogo[]>;
   private jogoFB$: Observable<Jogo>;
 
-  //Iniciar o templeate no firebase com esa classe
+  //Iniciar o templeate no firebase com essa classe
   jogosRef: AngularFirestoreCollection<Jogo> = null;
 
   constructor(private firestore: AngularFirestore) {
@@ -32,6 +33,11 @@ export class FirebaseService {
   update(id: string, data: any): Promise<void> {
     return this.jogosRef.doc(id).update(data);
   }
+
+  // async updateIncremente(id: string, campo: string): Promise<void> {
+  //   const admin = require('firebase-admin');
+  //   const result = await this.jogosRef.doc(id).update({ "campo": admin.firestore.FieldValue.increment(50)});
+  // }
 
   delete(id: string): Promise<void> {
     return this.jogosRef.doc(id).delete();

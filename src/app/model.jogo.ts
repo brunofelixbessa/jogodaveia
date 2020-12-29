@@ -1,25 +1,5 @@
-// export interface Jogo {
-//   uid: string;
-//   email: string;
-//   photoURL?: string;
-//   displayName?: string;
-// }
-
 export class Jogo {
   constructor(
-    // public descricao: string = '',
-    // public cadastrador: string = '',
-    // public responsavel: string = '',
-    // public tipo: string = '',
-    // public assunto: string = '',
-    // public trelloID: string = '',
-    // public imagem: string = '',
-    // public urgente: boolean = false,
-    // public email: string = '',
-    // public geolocalizacao: string = '',
-    // public nota: number = 0,
-    // public resolvido: boolean = false,
-    // public local: string = '',
 
     public jogoID: string = "",
     public player1: string = "",
@@ -37,6 +17,8 @@ export class Jogo {
     public ultimoGanhado: string = "",
     public p1: number = 0,
     public p2: number = 0,
+    public nome1: string = "",
+    public nome2: string = "",
 
   ) { }
 }

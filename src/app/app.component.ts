@@ -1,6 +1,8 @@
+import { IfStmt } from '@angular/compiler';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NgNavigatorShareService } from 'ng-navigator-share';
 import { EMPTY, Observable } from 'rxjs';
 import { take, catchError } from 'rxjs/operators';
 import { FireAuthService } from './fire-auth.service';
@@ -19,6 +21,7 @@ export class AppComponent implements OnInit {
   showButton = false;
   mobile: HTMLInputElement;
   message;
+  private ngNavigatorShareService: NgNavigatorShareService;
 
   @HostListener('window:beforeinstallprompt', ['$event'])
   onbeforeinstallprompt(e) {
@@ -32,10 +35,14 @@ export class AppComponent implements OnInit {
 
   constructor(
     //private swUpdates: SwUpdate,
+    ngNavigatorShareService: NgNavigatorShareService,
     public auth: FireAuthService,
     private readonly snackBar: MatSnackBar,
-    private readonly router: Router
-  ) { }
+    private readonly router: Router,
+    private readonly route: ActivatedRoute
+  ) {
+    this.ngNavigatorShareService = ngNavigatorShareService;
+  }
 
   ngOnInit() {
 
@@ -44,6 +51,20 @@ export class AppComponent implements OnInit {
     this.detectar_mobile();
 
   }
+
+  async compartilhar() {
+    try {
+      const sharedResponse = await this.ngNavigatorShareService.share({
+        title: 'Jogo da Véia',
+        text: 'Gostaria de jogar comigo uma partida?',
+        url: 'teste' + this.route
+      });
+      console.log(sharedResponse);
+    } catch (error) {
+      console.log('You app is not shared, reason: ', error);
+    }
+  }
+
 
   reloadCache() {
     // if (this.swUpdates.isEnabled) {

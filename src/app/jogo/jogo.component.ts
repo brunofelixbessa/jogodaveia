@@ -5,7 +5,9 @@ import { FireAuthService } from '../fire-auth.service';
 import { User } from '../model.user';
 import { Jogo } from '../model.jogo';
 import { ActivatedRoute, Router, } from '@angular/router';
-import { IfStmt } from '@angular/compiler';
+import { MatDialog } from '@angular/material/dialog';
+import { ModalVitoriaComponent } from '../modal-vitoria/modal-vitoria.component';
+import firebase from 'firebase';
 
 @Component({
   selector: 'app-jogo',
@@ -23,31 +25,46 @@ export class JogoComponent implements OnInit {
     private readonly snackBar: MatSnackBar,
     private firebase: FirebaseService,
     public auth: FireAuthService,
-    private readonly route: ActivatedRoute, private readonly router: Router,) { }
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    public dialog: MatDialog,
+  ) {
+
+    this.usuario = FireAuthService.getUsuario();
+
+    const productIdFromRoute = this.route.snapshot.paramMap.get('jogoID');
+    if (!productIdFromRoute)
+      return;
+
+    this.buscar_unitario2(productIdFromRoute);
+
+  }
 
   ngOnInit() {
-    const productIdFromRoute = this.route.snapshot.paramMap.get('jogoID');
-    this.buscar_unitario2(productIdFromRoute);
-    this.identificarUsuario();
+
   }
 
   identificarUsuario() {
-    this.usuario = FireAuthService.getUsuario();
+
+    // console.log('vsd' + this.jogoAtual.jogoID)
+    // if (this.jogoAtual.jogoID === "")
+    //   return;
 
     if (this.usuario) {
-      if (this.usuario.displayName === this.jogoAtual.player1) {
-        this.snackBar.open(`Vamos lá ${this.jogoAtual.player1} 'Player 1'`, 'Fechar', {
-          duration: 1000,
-        });
+      if (this.usuario.uid === this.jogoAtual.player1) {
+        // this.snackBar.open(`Vamos lá ${this.jogoAtual.player1} Player 1`, 'Fechar', {
+        //   duration: 1000,
+        // });
         return;
       }
 
-      if (!this.jogoAtual.player1) {
+      if (this.jogoAtual.player2 === "") {
         let record = {};
-        record['player2'] = this.usuario.displayName;
+        record['player2'] = this.usuario.uid;
+        record['nome2'] = this.usuario.displayName;
         this.firebase.update(this.jogoAtual.jogoID, record);
 
-        this.snackBar.open(`Vamos lá ${this.usuario.displayName} 'Player 2'`, 'Fechar', {
+        this.snackBar.open(`Vamos lá ${this.usuario.displayName} Player 2`, 'Fechar', {
           duration: 1000,
         });
       }
@@ -61,7 +78,7 @@ export class JogoComponent implements OnInit {
       return;
 
     this.jogoAtual.jogoID = this.usuario.uid;
-    this.jogoAtual.player1 = this.usuario.displayName;
+    this.jogoAtual.player1 = this.usuario.uid;
     this.jogoAtual.player2 = '';
     this.jogoAtual.c1 = '';
     this.jogoAtual.c2 = '';
@@ -76,47 +93,147 @@ export class JogoComponent implements OnInit {
     this.jogoAtual.ultimoGanhado = '';
     this.jogoAtual.p1 = 0;
     this.jogoAtual.p2 = 0;
+    this.jogoAtual.nome1 = this.usuario.displayName;
+    this.jogoAtual.nome2 = '';
 
     this.firebase.criar_id(this.jogoAtual, this.jogoAtual.jogoID).then(resp => {
       this.snackBar.open(`Jogo criado ${this.usuario.uid} 😾`, 'Fechar', {
         duration: 1000,
       });
       this.router.navigate(['jogo', this.usuario.uid]);
-    })
-      .catch(error => {
-        console.log(error);
+    }).catch(error => {
+      console.log(error);
+    });
+
+  }
+
+  reiniciar() {
+    //console.log(this.jogoAtual)
+    //this.jogoAtual.jogoID = this.jogoAtual.jogoID;
+
+    let aux = this.jogoAtual.player1;
+    let placar = 0;
+
+    //Troca o player que vai começar
+    this.jogoAtual.player1 = this.jogoAtual.player2;
+    this.jogoAtual.player2 = aux;
+
+    this.jogoAtual.c1 = '';
+    this.jogoAtual.c2 = '';
+    this.jogoAtual.c3 = '';
+    this.jogoAtual.c4 = '';
+    this.jogoAtual.c5 = '';
+    this.jogoAtual.c6 = '';
+    this.jogoAtual.c7 = '';
+    this.jogoAtual.c8 = '';
+    this.jogoAtual.c9 = '';
+    this.jogoAtual.suavez = true;
+    this.jogoAtual.ultimoGanhado = '';
+    //Mantem o placar
+    placar = this.jogoAtual.p1;
+    this.jogoAtual.p1 = this.jogoAtual.p2;
+    this.jogoAtual.p2 = placar;
+    //Troca o nome de quem vai começar
+    aux = this.jogoAtual.nome1;
+    this.jogoAtual.nome1 = this.jogoAtual.nome2;
+    this.jogoAtual.nome2 = aux
+
+    this.firebase.update(this.jogoAtual.jogoID, this.jogoAtual).then(resp => {
+      this.snackBar.open(`Jogo recriado 😾`, 'Fechar', {
+        duration: 1000,
       });
+    }).catch(error => {
+      //console.log(error);
+    });
   }
 
   jogar(casa: string) {
 
-    if (this.jogoAtual.suavez && this.usuario.displayName === this.jogoAtual.player1) {
+    if (this.jogoAtual[casa] !== "")
+      return;
+
+    if (this.jogoAtual.suavez && this.usuario.uid === this.jogoAtual.player1) {
+
       let record = {};
       record[casa] = 'X';
       record['suavez'] = false;
-      this.firebase.update(this.jogoAtual.jogoID, record);
+      this.firebase.update(this.jogoAtual.jogoID, record).then(resul => {
+        this.verificaVitoria();
+      });
+
     }
 
-    if (!this.jogoAtual.suavez && this.usuario.displayName === this.jogoAtual.player2) {
+    if (!this.jogoAtual.suavez && this.usuario.uid === this.jogoAtual.player2) {
+
       let record = {};
       record[casa] = 'O';
       record['suavez'] = true;
-      this.firebase.update(this.jogoAtual.jogoID, record);
+
+      this.firebase.update(this.jogoAtual.jogoID, record).then(resul => {
+        this.verificaVitoria();
+      });
     }
 
   }
 
-  buscar_unitario1() {
-    //this.jogo$ = this.firebase.buscarUnicoObs("2");
+  vitoria() {
+
+    const ganhador = this.jogoAtual.suavez ? this.jogoAtual.nome1 : this.jogoAtual.nome2;
+
+    //Ajusta placar
+    const incremente = firebase.firestore.FieldValue.increment(1)
+    let record = {};
+    if (!this.jogoAtual.suavez) {
+      record['p1'] = incremente;
+    } else {
+      record['p2'] = incremente;
+    }
+    this.firebase.update(this.jogoAtual.jogoID, record).then(resul => {
+      //this.verificaVitoria();
+    });
+
+
+    const dialogRef = this.dialog.open(ModalVitoriaComponent,
+      {
+        data: {
+          titulo: `Parabéns ${ganhador} você ganhou a véia! 👵`,
+          descricao: ""
+        }
+      });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result)
+        this.reiniciar();
+    });
+  }
+
+  verificaVitoria() {
+    if (this.iguais(this.jogoAtual.c1, this.jogoAtual.c2, this.jogoAtual.c3)) { this.vitoria(); }
+    if (this.iguais(this.jogoAtual.c4, this.jogoAtual.c5, this.jogoAtual.c6)) { this.vitoria(); }
+    if (this.iguais(this.jogoAtual.c7, this.jogoAtual.c8, this.jogoAtual.c9)) { this.vitoria(); }
+    if (this.iguais(this.jogoAtual.c1, this.jogoAtual.c4, this.jogoAtual.c7)) { this.vitoria(); }
+    if (this.iguais(this.jogoAtual.c2, this.jogoAtual.c5, this.jogoAtual.c8)) { this.vitoria(); }
+    if (this.iguais(this.jogoAtual.c3, this.jogoAtual.c6, this.jogoAtual.c9)) { this.vitoria(); }
+    if (this.iguais(this.jogoAtual.c1, this.jogoAtual.c5, this.jogoAtual.c9)) { this.vitoria(); }
+    if (this.iguais(this.jogoAtual.c3, this.jogoAtual.c5, this.jogoAtual.c7)) { this.vitoria(); }
+
+  }
+
+  iguais(c1, c2, c3): boolean {
+
+    if (c1 != "" && c2 != "" && c3 != "") {
+      if (c1 === c2 && c2 === c3) {
+        return true;
+      }
+    }
+    return false;
   }
 
   buscar_unitario2(jogoID: string) {
-
-    if (jogoID) {
-      this.firebase.buscarUnico(jogoID).subscribe(data => {
-        this.jogoAtual = data;
-      });
-    }
+    this.firebase.buscarUnico(jogoID).subscribe(data => {
+      this.jogoAtual = data;
+      this.identificarUsuario();
+    });
   }
 
   buscar_todos1() {

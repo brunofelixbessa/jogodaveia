@@ -29,6 +29,10 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ModalVitoriaComponent } from './modal-vitoria/modal-vitoria.component';
+import { ModalQrcodComponent } from './modal-qrcod/modal-qrcod.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +40,8 @@ import { MatGridListModule } from '@angular/material/grid-list';
     LoginComponent,
     JogoComponent,
     ProfileCardComponent,
+    ModalVitoriaComponent,
+    ModalQrcodComponent,
   ],
   imports: [
     BrowserModule,
@@ -56,7 +62,9 @@ import { MatGridListModule } from '@angular/material/grid-list';
     MatToolbarModule,
     MatTooltipModule,
     MatSnackBarModule,
-    MatGridListModule
+    MatGridListModule,
+    MatBadgeModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

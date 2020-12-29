@@ -1,9 +1,6 @@
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" class="mat-elevation-z6">
   <mat-toolbar-row>
-    <button mat-button routerLink="/jogo" matTooltip="Jogo da velha">
-      Jogo da Véia
-    </button>
-    <span class="spacer"></span>
+
     <ng-container *ngIf="user$ | async as user; else loginIcon">
 
       <app-profile-card [user]="user" (logoutClick)="logout()">
@@ -17,6 +14,20 @@
         </mat-icon>
       </button>
     </ng-template>
+
+    <button mat-button routerLink="/jogo" matTooltip="Jogo da velha">
+      Jogo da Véia
+    </button>
+
+    <span class="espaco"></span>
+
+
+    <button id="btnCompartilhar" mat-raised-button color="primary" (click)="compartilhar()">
+      Convidar Jogador
+      <span class="espaco"></span>
+      <mat-icon>share</mat-icon>
+    </button>
+
   </mat-toolbar-row>
 </mat-toolbar>
 
