@@ -27,21 +27,17 @@
 
   <div class="col col-2">
 
-    <div *ngIf="!jogoAtual.jogoID" class="row">
-      <button mat-raised-button (click)="criarJogo()">Criar NOVO JOGO</button>
-    </div>
-
     <br />
     <div *ngIf="jogoAtual.player1 && jogoAtual.player2" class="row">
 
       <div class="col">
-        <div class="row">
+        <div class="row" style="padding: 2px 30px;">
           <div class="col">
             <button class="full" [ngClass]="{'suavez':jogoAtual.suavez }" mat-raised-button matBadge={{jogoAtual.p1}}>
               {{jogoAtual.nome1}}</button>
           </div>
         </div>
-        <div class="row">
+        <div class="row" style="padding: 2px 30px;">
           <div class="col">
             <button class="full" [ngClass]="{'suavez':!jogoAtual.suavez }" mat-raised-button matBadge={{jogoAtual.p2}}>
               {{jogoAtual.nome2}}</button>
@@ -50,16 +46,18 @@
       </div>
 
     </div>
-  </div>
-  <br /><br />
-  <div *ngIf="jogoAtual.player1 && jogoAtual.player2" class="row">
-    <div class="col">
-      <button mat-raised-button color="primary" (click)="reiniciar()" class="full">
-        Reinicar JOGO
-      </button>
-      <button (click)="vitoria()">dialog</button>
+
+    <div *ngIf="jogoAtual.player1 && jogoAtual.player2" class="row" style="margin-top: 5px;">
+      <div class="col">
+        <button style="height: 70px;" mat-raised-button color="primary" (click)="reiniciar()" class="full">
+          Recomeçar JOGO
+        </button>
+        <!-- <button (click)="vitoria()">dialog</button> -->
+      </div>
+
     </div>
 
   </div>
+
 
 </div>

@@ -1,11 +1,12 @@
-import { IfStmt } from '@angular/compiler';
 import { Component, HostListener, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { NgNavigatorShareService } from 'ng-navigator-share';
-import { EMPTY, Observable } from 'rxjs';
-import { take, catchError } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { FireAuthService } from './fire-auth.service';
+import { ModalQrcodComponent } from './modal-qrcod/modal-qrcod.component';
 import { User } from './model.user';
 //import { SwUpdate } from '@angular/service-worker';
 
@@ -21,6 +22,7 @@ export class AppComponent implements OnInit {
   showButton = false;
   mobile: HTMLInputElement;
   message;
+  //compartilharBtn = false;
   private ngNavigatorShareService: NgNavigatorShareService;
 
   @HostListener('window:beforeinstallprompt', ['$event'])
@@ -39,32 +41,52 @@ export class AppComponent implements OnInit {
     public auth: FireAuthService,
     private readonly snackBar: MatSnackBar,
     private readonly router: Router,
-    private readonly route: ActivatedRoute
+    public dialog: MatDialog,
   ) {
     this.ngNavigatorShareService = ngNavigatorShareService;
   }
 
   ngOnInit() {
 
+    //detecta tipo de device
     this.mobile = document.getElementById('mobileORdescktop') as HTMLInputElement;
     this.reloadCache();
     this.detectar_mobile();
+
+    // const jogoID = localStorage.getItem('jogoID')
+    // if (jogoID)
+    //   this.compartilharBtn = true;
+
+    //console.log('ok' + this.router.url);
+    //console.log(window.location.href);
 
   }
 
   async compartilhar() {
     try {
+
+      const jogoID = localStorage.getItem('jogoID')
       const sharedResponse = await this.ngNavigatorShareService.share({
         title: 'Jogo da Véia',
         text: 'Gostaria de jogar comigo uma partida?',
-        url: 'teste' + this.route
+        url: 'jogo/' + jogoID
       });
-      console.log(sharedResponse);
     } catch (error) {
       console.log('You app is not shared, reason: ', error);
     }
   }
 
+  qrcode() {
+    const jogoID = localStorage.getItem('jogoID')
+    const dialogRef = this.dialog.open(ModalQrcodComponent,
+      {
+        data: {
+          titulo: jogoID,
+          elementType: 'url',
+          value: window.location.href
+        }
+      });
+  }
 
   reloadCache() {
     // if (this.swUpdates.isEnabled) {

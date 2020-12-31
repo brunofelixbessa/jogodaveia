@@ -5,17 +5,26 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { environment } from './../environments/environment';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
+
 
 //Firebase
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { environment } from './../environments/environment';
+
+//Paginas
 import { LoginComponent } from './login/login.component';
 import { JogoComponent } from './jogo/jogo.component';
 import { ProfileCardComponent } from './profile-card/profile-card.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ModalVitoriaComponent } from './modal-vitoria/modal-vitoria.component';
+import { ModalQrcodComponent } from './modal-qrcod/modal-qrcod.component';
+import { SplashScreenComponent } from './splash-screen/splash-screen.component';
+
 
 //Material
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -31,8 +40,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatDialogModule } from '@angular/material/dialog';
-import { ModalVitoriaComponent } from './modal-vitoria/modal-vitoria.component';
-import { ModalQrcodComponent } from './modal-qrcod/modal-qrcod.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +49,7 @@ import { ModalQrcodComponent } from './modal-qrcod/modal-qrcod.component';
     ProfileCardComponent,
     ModalVitoriaComponent,
     ModalQrcodComponent,
+    SplashScreenComponent,
   ],
   imports: [
     BrowserModule,
@@ -64,7 +72,9 @@ import { ModalQrcodComponent } from './modal-qrcod/modal-qrcod.component';
     MatSnackBarModule,
     MatGridListModule,
     MatBadgeModule,
-    MatDialogModule
+    MatDialogModule,
+    NgxQRCodeModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [],
   bootstrap: [AppComponent]

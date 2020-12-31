@@ -38,10 +38,7 @@ export class LoginComponent implements OnInit {
   matcher = new MyErrorStateMatcher();
   return: string = '';
   constructor(
-    public authService: FireAuthService,
-    private readonly snackBar: MatSnackBar,
-    private route: ActivatedRoute,
-    private readonly router: Router,) { }
+    public authService: FireAuthService,) { }
 
   ngOnInit(): void {
     // this.route.queryParams

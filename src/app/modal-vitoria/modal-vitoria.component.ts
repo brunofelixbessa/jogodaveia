@@ -4,7 +4,6 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 @Component({
   selector: 'app-modal-vitoria',
   templateUrl: './modal-vitoria.component.html',
-  styleUrls: ['./modal-vitoria.component.css']
 })
 export class ModalVitoriaComponent implements OnInit {
 

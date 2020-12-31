@@ -1,3 +1,4 @@
+import { SplashScreenComponent } from './splash-screen/splash-screen.component';
 import { JogoComponent } from './jogo/jogo.component';
 import { LoginComponent } from './login/login.component';
 import { NgModule } from '@angular/core';
@@ -10,7 +11,9 @@ const routes: Routes = [
   { path: 'jogo', component: JogoComponent, canActivate: [AuthGuard], },
   { path: 'jogo/:jogoID', component: JogoComponent, canActivate: [AuthGuard], },
   { path: 'login', component: LoginComponent },
+  { path: 'splash', component: SplashScreenComponent },
   { path: '', component: LoginComponent },
+
 
 ];
 

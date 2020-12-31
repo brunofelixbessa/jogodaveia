@@ -21,17 +21,25 @@
 
     <span class="espaco"></span>
 
-
-    <button id="btnCompartilhar" mat-raised-button color="primary" (click)="compartilhar()">
-      Convidar Jogador
+    <div>
+      <button mat-mini-fab color="accent" (click)="qrcode()" aria-label="qrcode">
+        <mat-icon>qr_code_2</mat-icon>
+      </button>
       <span class="espaco"></span>
-      <mat-icon>share</mat-icon>
-    </button>
+      <button id="btnCompartilhar" mat-raised-button color="primary" (click)="compartilhar()">
+        Convidar Jogador
+        <span class="espaco"></span>
+        <mat-icon>share</mat-icon>
+      </button>
+    </div>
+
 
   </mat-toolbar-row>
 </mat-toolbar>
 
+<button class="pwa" *ngIf="showButton" (click)="installPwa()" mat-raised-button mat-button>Instalar
+  Jogo da Véia</button>
+<app-splash-screen></app-splash-screen>
 <router-outlet></router-outlet>
 
 <input type="hidden" id="mobileORdescktop" value="true">
-<button *ngIf="showButton" (click)="installPwa()" mat-raised-button color="accent" mat-button>Intalar App</button>

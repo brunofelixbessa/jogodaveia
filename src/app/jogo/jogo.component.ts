@@ -24,17 +24,19 @@ export class JogoComponent implements OnInit {
   constructor(
     private readonly snackBar: MatSnackBar,
     private firebase: FirebaseService,
-    public auth: FireAuthService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    public dialog: MatDialog,
+    private dialog: MatDialog,
   ) {
 
     this.usuario = FireAuthService.getUsuario();
 
     const productIdFromRoute = this.route.snapshot.paramMap.get('jogoID');
-    if (!productIdFromRoute)
+    if (!productIdFromRoute) {
+      this.criarJogo();
       return;
+    }
+
 
     this.buscar_unitario2(productIdFromRoute);
 
@@ -100,6 +102,7 @@ export class JogoComponent implements OnInit {
       this.snackBar.open(`Jogo criado ${this.usuario.uid} 😾`, 'Fechar', {
         duration: 1000,
       });
+      localStorage.setItem('jogoID', this.usuario.uid)
       this.router.navigate(['jogo', this.usuario.uid]);
     }).catch(error => {
       console.log(error);
@@ -108,8 +111,6 @@ export class JogoComponent implements OnInit {
   }
 
   reiniciar() {
-    //console.log(this.jogoAtual)
-    //this.jogoAtual.jogoID = this.jogoAtual.jogoID;
 
     let aux = this.jogoAtual.player1;
     let placar = 0;
@@ -149,6 +150,15 @@ export class JogoComponent implements OnInit {
 
   jogar(casa: string) {
 
+    this.playAudioClique();
+
+    //Verifica fim de jogo
+    const ganhador = this.jogoAtual.suavez ? this.jogoAtual.nome1 : this.jogoAtual.nome2;
+    if (ganhador !== this.jogoAtual.ultimoGanhado && this.jogoAtual.ultimoGanhado !== "") {
+      //this.Derrota(ganhador);
+      return;
+    }
+
     if (this.jogoAtual[casa] !== "")
       return;
 
@@ -176,9 +186,29 @@ export class JogoComponent implements OnInit {
 
   }
 
+  playAudioVitoria() {
+    let audio = new Audio();
+    audio.src = "assets/vitoria.mp3";
+    audio.load();
+    audio.play();
+  }
+  playAudioDerrota() {
+    let audio = new Audio();
+    audio.src = "assets/derrota.mp3";
+    audio.load();
+    audio.play();
+  }
+  playAudioClique() {
+    let audio = new Audio();
+    audio.src = "assets/clique.mp3";
+    audio.load();
+    audio.play();
+  }
+
   vitoria() {
 
-    const ganhador = this.jogoAtual.suavez ? this.jogoAtual.nome1 : this.jogoAtual.nome2;
+    this.playAudioVitoria();
+    const ganhador = this.jogoAtual.suavez ? this.jogoAtual.nome2 : this.jogoAtual.nome1;
 
     //Ajusta placar
     const incremente = firebase.firestore.FieldValue.increment(1)
@@ -188,16 +218,36 @@ export class JogoComponent implements OnInit {
     } else {
       record['p2'] = incremente;
     }
+    record['ultimoGanhado'] = ganhador;
     this.firebase.update(this.jogoAtual.jogoID, record).then(resul => {
       //this.verificaVitoria();
     });
 
+    const dialogRef = this.dialog.open(ModalVitoriaComponent,
+      {
+        data: {
+          titulo: 'Parabéns',
+          descricao1: ganhador,
+          descricao2: 'você ganhou a véia! 👵'
+        }
+      });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result)
+        this.reiniciar();
+    });
+  }
+
+  Derrota(perdedor: string) {
+
+    this.playAudioDerrota();
 
     const dialogRef = this.dialog.open(ModalVitoriaComponent,
       {
         data: {
-          titulo: `Parabéns ${ganhador} você ganhou a véia! 👵`,
-          descricao: ""
+          titulo: 'Uma pena',
+          descricao1: perdedor,
+          descricao2: 'você perdeu a véia! 👵'
         }
       });
 

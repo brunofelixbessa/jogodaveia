@@ -1,1 +1,8 @@
-<p>modal-qrcod works!</p>
+<div class="row">
+  <div class="col">
+    {{data.titulo}}
+  </div>
+</div>
+
+<ngx-qrcode [elementType]="data.elementType" [value]="data.value" cssClass="qrcodeclass" errorCorrectionLevel="L">
+</ngx-qrcode>
