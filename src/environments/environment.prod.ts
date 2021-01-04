@@ -7,6 +7,6 @@ export const environment = {
     storageBucket: "jogo-da-velha-angular.appspot.com",
     messagingSenderId: "66398562536",
     appId: "1:66398562536:web:375a8fe610d37a1397815d",
-    measurementId: "G-52BCVTZN6W",
+    measurementId: "G-52BCVTZN6W"
   }
 };
